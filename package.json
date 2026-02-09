@@ -1,0 +1,27 @@
+{
+  "name": "driver-garage-backend",
+  "version": "1.0.0",
+  "description": "Backend for driver assistant project — Clean Architecture, module-by-module",
+  "type": "module",
+  "main": "src/main/server.js",
+  "scripts": {
+    "start": "node src/main/server.js",
+    "dev": "node --watch src/main/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elizabethyonas/driver-garage-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Elizabethyonas/driver-garage-backend/issues"
+  },
+  "homepage": "https://github.com/Elizabethyonas/driver-garage-backend#readme",
+  "dependencies": {
+    "dotenv": "^17.2.4",
+    "express": "^5.2.1"
+  }
+}
