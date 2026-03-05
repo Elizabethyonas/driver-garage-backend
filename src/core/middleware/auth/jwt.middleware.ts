@@ -14,7 +14,7 @@ export const verifyAdminJWT = (req: Request, res: Response, next: NextFunction) 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     if (payload.role !== 'ADMIN') return res.status(403).json({ error: 'Admin access required' });
-    (req as Request & { user: JwtPayload }).user = payload;
+    (req as Request & { user: JwtPayload & { role: "ADMIN" | "DRIVER" | "GARAGE" } }).user = payload as JwtPayload & { role: "ADMIN" | "DRIVER" | "GARAGE" };
     next();
   } catch {
     res.status(403).json({ error: 'Invalid token' });
@@ -29,7 +29,7 @@ export const verifyDriverJWT = (req: Request, res: Response, next: NextFunction)
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
     if (payload.role !== 'DRIVER') return res.status(403).json({ error: 'Driver access required' });
-    (req as Request & { user: JwtPayload }).user = payload;
+    (req as Request & { user: JwtPayload & { role: "ADMIN" | "DRIVER" | "GARAGE" } }).user = payload as JwtPayload & { role: "ADMIN" | "DRIVER" | "GARAGE" };
     next();
   } catch {
     res.status(403).json({ error: 'Invalid token' });

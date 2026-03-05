@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { JwtPayload } from '../../../../core/middleware/auth/jwt.middleware';
 import { VehicleRepository } from '../../infrastructure/repositories/vehicle.repository';
 import { CreateVehicleUseCase } from '../../application/usecases/create-vehicle.usecase';
 import { GetVehiclesUseCase } from '../../application/usecases/get-vehicles.usecase';
 import { GetVehicleByIdUseCase } from '../../application/usecases/get-vehicle-by-id.usecase';
 import { UpdateVehicleUseCase } from '../../application/usecases/update-vehicle.usecase';
 import { DeleteVehicleUseCase } from '../../application/usecases/delete-vehicle.usecase';
+import { JwtPayload } from '../../../../../core/middleware/auth/jwt.middleware';
 
 const repository = new VehicleRepository();
 const createVehicleUseCase = new CreateVehicleUseCase(repository);
