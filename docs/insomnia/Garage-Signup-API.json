@@ -1,0 +1,67 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "resources": [
+    {
+      "_type": "environment",
+      "_id": "env_garage_signup",
+      "name": "Garage Signup - Local",
+      "data": {
+        "base_url": "http://localhost:4000"
+      },
+      "parentId": null,
+      "isPrivate": false
+    },
+    {
+      "_type": "workspace",
+      "_id": "wrk_garage_signup",
+      "name": "Garage Signup API",
+      "description": "Garage account signup (multipart/form-data with business license upload)",
+      "scope": "collection",
+      "parentId": null
+    },
+    {
+      "_type": "request_group",
+      "_id": "fld_garage_auth",
+      "name": "1. Garage Auth",
+      "parentId": "wrk_garage_signup",
+      "environmentId": "env_garage_signup"
+    },
+    {
+      "_type": "request",
+      "_id": "req_garage_signup",
+      "name": "Garage Signup (multipart)",
+      "url": "{{ _.base_url }}/garages/auth/signup",
+      "method": "POST",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          { "name": "garage_name", "value": "SpeedFix Garage", "description": "Required", "disabled": false, "type": "text" },
+          { "name": "phone_number", "value": "0987654321", "description": "Required", "disabled": false, "type": "text" },
+          { "name": "email", "value": "garage@example.com", "description": "Required, unique", "disabled": false, "type": "text" },
+          { "name": "password", "value": "password123", "description": "Min 8 chars", "disabled": false, "type": "text" },
+          { "name": "confirm_password", "value": "password123", "description": "Must match password", "disabled": false, "type": "text" },
+          { "name": "garage_location", "value": "{\"address\":\"Bole Road, Addis Ababa, Ethiopia\",\"latitude\":8.9806,\"longitude\":38.7578,\"place_id\":\"ChIJ...\"}", "description": "JSON: address, latitude, longitude, place_id (optional)", "disabled": false, "type": "text" },
+          { "name": "services_offered", "value": "[\"oil_change\",\"tire_service\"]", "description": "JSON array of slugs: oil_change, tire_service, brake_repair, engine_diagnostics, battery_service, ac_repair, other", "disabled": false, "type": "text" },
+          { "name": "other_services", "value": "", "description": "Required if 'other' is in services_offered", "disabled": false, "type": "text" },
+          { "name": "business_license_document", "value": "", "description": "PDF, JPG or PNG (max 10MB) - select file in Insomnia", "disabled": false, "type": "file" }
+        ]
+      },
+      "parentId": "fld_garage_auth",
+      "description": "Create a garage account. Uses multipart/form-data. Attach a PDF or image for business_license_document. Use a unique email each time or you'll get 'Email already registered'."
+    },
+    {
+      "_type": "request",
+      "_id": "req_garage_login",
+      "name": "Garage Login",
+      "url": "{{ _.base_url }}/garages/auth/login",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"garage@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parentId": "fld_garage_auth",
+      "description": "Login with email and password. Returns token and garage object."
+    }
+  ]
+}
