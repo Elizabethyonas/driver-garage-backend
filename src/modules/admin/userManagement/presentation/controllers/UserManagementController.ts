@@ -7,63 +7,100 @@ import { ActivateUserUseCase } from "../../application/usecases/ActivateUserUseC
 import { DeleteUserUseCase } from "../../application/usecases/DeleteUserUseCase";
 import { GetUserStatsUseCase } from "../../application/usecases/GetUserStatsUseCase";
 
+import { ListUsersDto } from "../../application/dto/ListUsersDto";
+import { ActivateUserDto } from "../../application/dto/ActivateUserDto";
+import { WarnUserDto } from "../../application/dto/WarnUserDto";
+import { DeleteUserDto } from "../../application/dto/DeleteUserDto";
+import { UserStatsResponseDto } from "../../application/dto/GetUserStatsDto";
+import { BlockUserDto } from "../../application/dto/BlockUserDto";
+
 const repo = new PrismaUserRepository();
 
 export class UserManagementController {
     
   static async listUsers(req: Request, res: Response) {
-    const search = req.query.search as string | undefined;
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
+    const usecase = new ListUsersUseCase(repo);
 
-    console.log("Search value:", search);
-    const useCase = new ListUsersUseCase(repo);
-    const users = await useCase.execute(search, page, limit);
+    const dto: ListUsersDto = {
+     search: req.query.search ? String(req.query.search) : "",
+     page: req.query.page ? Number(req.query.page) : 1,
+     limit: req.query.limit ? Number(req.query.limit) : 10
+    };
+   
+    const users = await usecase.execute(dto);
+
     res.json(users);
   }
+    
+
 
    static async getStats(req: Request, res: Response) {
     const useCase = new GetUserStatsUseCase(repo);
+    //const dto: UserStatsResponseDto = {};
+
     const stats = await useCase.execute();
     res.json(stats);
 }
 
 
   static async blockUser(req: Request, res: Response) {
-    const id  = req.params.id as string;
+    const { id } = req.params;
     const { role } = req.body;
 
+    const dto: BlockUserDto = {
+      userId: String(req.params.id),
+      role: String(req.body.role)
+    };
+
     const useCase = new BlockUserUseCase(repo);
-    await useCase.execute(id, role);
+
+    await useCase.execute(dto); 
+
     res.json({ message: "User blocked successfully" });
   }
 
 static async warnUser(req: Request, res: Response) {
-  const  id  = req.params.id as string;
+  const  { id }  = req.params;
   const { role } = req.body;
 
+  const dto: WarnUserDto = {
+    userId: String(req.params.id),
+    role 
+  };
+
+
   const useCase = new WarnUserUseCase(repo);
-  await useCase.execute(id, role);
+  await useCase.execute(dto);
 
   res.json({ message: "User warned successfully" });
 }
 
 static async activateUser(req: Request, res: Response) {
-  const  id  = req.params.id as string;
+  const  { id }  = req.params;
   const { role } = req.body;
 
+  const dto: ActivateUserDto = {
+    userId: String(req.params.id),
+    role: String(req.body.role) 
+  };
+
   const useCase = new ActivateUserUseCase(repo);
-  await useCase.execute(id, role);
+  await useCase.execute(dto); 
 
   res.json({ message: "User activated successfully" });
 }
 
 static async deleteUser(req: Request, res: Response) {
-  const id = req.params.id as string;
+  const { id } = req.params;
   const { role } = req.body;
 
+  const dto: DeleteUserDto = {
+    userId: String(req.params.id),
+    role: String(req.body.role)
+  };
+
   const useCase = new DeleteUserUseCase(repo);
-  await useCase.execute(id, role);
+  await useCase.execute(dto);
 
   res.json({ message: "User deleted successfully" });
 }
