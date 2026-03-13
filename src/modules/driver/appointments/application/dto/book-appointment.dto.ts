@@ -6,7 +6,9 @@ export class BookAppointmentRequestDto {
   ) {}
 
   static from(body: unknown): BookAppointmentRequestDto {
-    if (!body || typeof body !== 'object') throw new Error('Invalid request body');
+    if (!body || typeof body !== 'object') {
+      throw new Error('Request body is required. Set Content-Type: application/json and send JSON with garageId, scheduledAt, and serviceDescription.');
+    }
 
     const b = body as any;
     const garageId = String(b.garageId ?? '').trim();

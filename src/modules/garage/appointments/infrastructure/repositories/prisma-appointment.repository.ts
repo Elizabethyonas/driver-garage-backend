@@ -1,8 +1,8 @@
-import { prisma } from '../../../../infrastructure/prisma/prisma.client';
+import { prisma } from '../../../../../infrastructure/prisma/prisma.client';
 import { Appointment, AppointmentStatus } from '../../domain/entities/appointment.entity';
 import { IAppointmentRepository } from '../../domain/repositories/appointment.repository.interface';
-import { PrismaGarageAvailabilityRepository } from '../../availability/infrastructure/repositories/prisma-availability.repository';
-import { DayOfWeek } from '../../availability/domain/entities/availability-slot.entity';
+import { PrismaGarageAvailabilityRepository } from '../../../availability/infrastructure/repositories/prisma-availability.repository';
+import { DayOfWeek } from '../../../availability/domain/entities/availability-slot.entity';
 
 type PrismaAppointmentStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'IN_SERVICE' | 'COMPLETED' | 'CANCELLED';
 
@@ -86,7 +86,13 @@ export class PrismaAppointmentRepository implements IAppointmentRepository {
   }): Promise<Appointment> {
     const garage = await prisma.garage.findUnique({ where: { id: input.garageId } });
     if (!garage) throw new Error('Garage not found');
-    if (garage.status !== 'ACTIVE') throw new Error('Garage is not available');
+    if (garage.status !== 'ACTIVE') {
+      throw new Error(
+        garage.status === 'PENDING'
+          ? 'Garage is not available (pending admin approval)'
+          : 'Garage is not available'
+      );
+    }
 
     const now = new Date();
     if (input.scheduledAt <= now) throw new Error('Appointment date and time must be in the future');
